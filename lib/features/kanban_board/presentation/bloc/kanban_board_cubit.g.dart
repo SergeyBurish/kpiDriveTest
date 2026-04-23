@@ -9,7 +9,7 @@ part of 'kanban_board_cubit.dart';
 abstract class _$KanbanBoardStateCWProxy {
   KanbanBoardState status(KanbanBoardStatus status);
 
-  KanbanBoardState dataEntity(DataEntity? dataEntity);
+  KanbanBoardState cards(MapCards cards);
 
   /// Creates a new instance with the provided field values.
   /// Passing `null` to a nullable field nullifies it, while `null` for a non-nullable field is ignored. To update a single field use `KanbanBoardState(...).copyWith.fieldName(value)`.
@@ -18,7 +18,7 @@ abstract class _$KanbanBoardStateCWProxy {
   /// ```dart
   /// KanbanBoardState(...).copyWith(id: 12, name: "My name")
   /// ```
-  KanbanBoardState call({KanbanBoardStatus status, DataEntity? dataEntity});
+  KanbanBoardState call({KanbanBoardStatus status, MapCards cards});
 }
 
 /// Callable proxy for `copyWith` functionality.
@@ -32,8 +32,7 @@ class _$KanbanBoardStateCWProxyImpl implements _$KanbanBoardStateCWProxy {
   KanbanBoardState status(KanbanBoardStatus status) => call(status: status);
 
   @override
-  KanbanBoardState dataEntity(DataEntity? dataEntity) =>
-      call(dataEntity: dataEntity);
+  KanbanBoardState cards(MapCards cards) => call(cards: cards);
 
   @override
   /// Creates a new instance with the provided field values.
@@ -45,17 +44,17 @@ class _$KanbanBoardStateCWProxyImpl implements _$KanbanBoardStateCWProxy {
   /// ```
   KanbanBoardState call({
     Object? status = const $CopyWithPlaceholder(),
-    Object? dataEntity = const $CopyWithPlaceholder(),
+    Object? cards = const $CopyWithPlaceholder(),
   }) {
     return KanbanBoardState._(
       status: status == const $CopyWithPlaceholder() || status == null
           ? _value.status
           // ignore: cast_nullable_to_non_nullable
           : status as KanbanBoardStatus,
-      dataEntity: dataEntity == const $CopyWithPlaceholder()
-          ? _value.dataEntity
+      cards: cards == const $CopyWithPlaceholder() || cards == null
+          ? _value.cards
           // ignore: cast_nullable_to_non_nullable
-          : dataEntity as DataEntity?,
+          : cards as MapCards,
     );
   }
 }

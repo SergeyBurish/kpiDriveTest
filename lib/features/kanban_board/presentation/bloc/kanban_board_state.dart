@@ -10,16 +10,17 @@ enum KanbanBoardStatus {
 @CopyWith(constructor: '_')
 class KanbanBoardState {
   final KanbanBoardStatus status;
-  final DataEntity? dataEntity;
+  final MapCards cards;
 
   KanbanBoardState._({
     required this.status,
-    required this.dataEntity,
+    required this.cards,
   });
 
   KanbanBoardState.initial() :
     status = KanbanBoardStatus.idle,
-    dataEntity = null;
+    cards = {};
 
-  bool get success => status == KanbanBoardStatus.success;
+  bool get isSuccess => status == KanbanBoardStatus.success;
+  bool get isLoading => status == KanbanBoardStatus.inProgress;
 }

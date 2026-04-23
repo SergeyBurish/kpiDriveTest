@@ -38,7 +38,8 @@ dependencies:
   copy_with_extension: ^11.0.0
   json_annotation: ^4.9.0
   easy_localization: ^3.0.8
-  kanban_board: ^1.0.0+2
+  flutter_boardview: ^0.3.0
+  equatable: ^2.0.8
 
 dev_dependencies:
   flutter_test:

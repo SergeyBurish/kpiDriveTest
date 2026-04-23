@@ -20,12 +20,17 @@ class RowDto extends RowEntity {
   @JsonKey(name: 'parent_id')
   int? get parentId;
 
+  @override
+  @JsonKey(name: 'parent_name')
+  String? get parentName;
+
 
   RowDto({
     required super.name, 
     super.order, 
     super.indicatorToMoId, 
-    super.parentId
+    super.parentId,
+    super.parentName,
   });
 
   factory RowDto.fromJson(Map<String, dynamic> json) => _$RowDtoFromJson(json);

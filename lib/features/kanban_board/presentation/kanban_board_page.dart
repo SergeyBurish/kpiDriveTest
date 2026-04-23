@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../domain/entity/data_entity.dart';
 import 'bloc/kanban_board_cubit.dart';
 import 'kanban_board_view.dart';
 
@@ -16,26 +15,27 @@ class KanbanBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DataEntity? dataEntity = context.watch<KanbanBoardCubit>().state.dataEntity;
-    return BlocListener<KanbanBoardCubit, KanbanBoardState>(
-      listenWhen: (previous, current) => previous.success != current.success,
+    return BlocConsumer<KanbanBoardCubit, KanbanBoardState>(
+      listenWhen: (previous, current) => previous.isSuccess != current.isSuccess,
       listener: (context, state) {
-        if (state.success) {
+        if (state.isSuccess) {
           _showSnackBar(context, 'successfully_updated'.tr());
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'kanban_board'.tr(),
-            style: context.textStyles.appBarText,
+      builder: (context, state) =>
+        Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'kanban_board'.tr(),
+              style: context.textStyles.appBarText,
+            ),
+            backgroundColor: context.colorScheme.appBarBackground,
           ),
-          backgroundColor: context.colorScheme.appBarBackground,
+          body: KanbanBoardView(
+            cards: state.cards,
+            isLoading: state.isLoading,
+          ),
         ),
-        body: KanbanBoardView(
-          rowsCount: dataEntity?.rowsCount ?? 0,
-        ),
-      ),
     );
   }
 }

@@ -11,6 +11,7 @@ RowDto _$RowDtoFromJson(Map<String, dynamic> json) => RowDto(
   order: (json['order'] as num?)?.toInt(),
   indicatorToMoId: (json['indicator_to_mo_id'] as num?)?.toInt(),
   parentId: (json['parent_id'] as num?)?.toInt(),
+  parentName: json['parent_name'] as String?,
 );
 
 Map<String, dynamic> _$RowDtoToJson(RowDto instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$RowDtoToJson(RowDto instance) => <String, dynamic>{
   'order': instance.order,
   'indicator_to_mo_id': instance.indicatorToMoId,
   'parent_id': instance.parentId,
+  'parent_name': instance.parentName,
 };

@@ -1,7 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entity/data_entity.dart';
+import '../../../../core/typedefs.dart';
 import '../../domain/usecase/kanban_board_usecase.dart';
 
 part 'kanban_board_cubit.g.dart';
@@ -17,13 +17,13 @@ class KanbanBoardCubit extends Cubit<KanbanBoardState> {
   void _onLoad () async {
     emit(state.copyWith.status(KanbanBoardStatus.inProgress));
 
-    final output = await kanbanBoardUsecase.getMoIndicators();
+    final output = await kanbanBoardUsecase.getCards();
     output.fold(
       ifLeft: (_) => emit(state.copyWith.status(KanbanBoardStatus.error)),
-      ifRight: (DataEntity dataEntity) {
+      ifRight: (cards) {
         emit(state.copyWith(
           status: KanbanBoardStatus.success,
-          dataEntity: dataEntity,
+          cards: cards,
         ));
       }
     );
