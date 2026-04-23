@@ -12,12 +12,18 @@ import '../domain/entity/row_entity.dart';
 class KanbanBoardView extends StatelessWidget {
   final MapCards cards;
   final bool isLoading;
+  final void Function({int? cardId, int? order}) onOrderChange;
+  final void Function({int? cardId, int? listId}) onListChange;
+
   final BoardViewController _boardViewController = BoardViewController();
+  late final List<BoardList> _lists = _cardsToLists(cards);
 
   KanbanBoardView({
     super.key,
     required this.cards,
     required this.isLoading,
+    required this.onOrderChange,
+    required this.onListChange,
   });
 
   @override
@@ -25,7 +31,7 @@ class KanbanBoardView extends StatelessWidget {
     return Stack(
       children: [
         BoardView(
-          lists: _cardsToLists(cards),
+          lists: _lists,
           boardViewController: _boardViewController,
           dragDelay: 50,
         ),
@@ -47,6 +53,7 @@ class KanbanBoardView extends StatelessWidget {
 
   BoardList _mapEntryToBoardList(MapEntry<RowEntity, Set<RowEntity>> mapEntry) => 
     BoardList(
+      key: ValueKey<int?>(mapEntry.key.indicatorToMoId), // keep id in key instead of index field
       backgroundColor: Colors.blueGrey, // TODO: theme
       header: [
         Expanded(
@@ -57,33 +64,38 @@ class KanbanBoardView extends StatelessWidget {
         ),
         Text('${mapEntry.key.order}')
       ],
-      index: mapEntry.key.indicatorToMoId,
       items: mapEntry.value.map((RowEntity rowEntity) => 
         _rowEntityToBoardItem(rowEntity)
       ).toList(),
-      onStartDragList: (int? listIndex) {
-        print('onStartDragList: $listIndex');
-      },
-      onDropList: (int? listIndex, int? oldListIndex) {  
-        print('onDropList: $listIndex, $oldListIndex');     
-      },
     );
 
   BoardItem _rowEntityToBoardItem(RowEntity rowEntity) => 
     BoardItem(
-      index: rowEntity.indicatorToMoId,
+      index: rowEntity.indicatorToMoId,  // keep id in index field (it works in BoardItem)
       item: Card(
         color: Colors.green, // TODO: theme
         child: Padding(
           padding: const EdgeInsets.all(Dm.s8),
-          child: Text(rowEntity.name),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  rowEntity.name,
+                  maxLines: 3,
+                ),
+              ),
+              Text('${rowEntity.order}')
+            ],
+          ),
         ),
       ),
-      onStartDragItem: (int? listIndex, int? itemIndex, BoardItemState state) {
-        print('onStartDragItem: $listIndex, $itemIndex');
-      },
       onDropItem: (int? listIndex, int? itemIndex, int? oldListIndex, int? oldItemIndex, BoardItemState state) {
-        print('onDropItem: $listIndex, $itemIndex $oldListIndex, $oldItemIndex');
+        if (listIndex != null && oldListIndex != null && listIndex != oldListIndex) {
+          int? listId = (_lists[listIndex].key as ValueKey<int?>).value;
+          onListChange(cardId: rowEntity.indicatorToMoId, listId: listId);
+        } else if (itemIndex != null && oldItemIndex != null && itemIndex != oldItemIndex) {
+          onOrderChange(cardId: rowEntity.indicatorToMoId, order: itemIndex);
+        }
       }
     );
 }

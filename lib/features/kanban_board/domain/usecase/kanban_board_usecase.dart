@@ -6,7 +6,15 @@ import '../entity/row_entity.dart';
 import '../repository/kanban_board_repository.dart';
 
 abstract interface class KanbanBoardUsecase{
-    Future<Either<Exception, MapCards>> getCards();
+  Future<Either<Exception, MapCards>> getCards();
+  Future<Either<Exception, MapCards>> onParentChange({
+    required int cardId,
+    required int parentId,
+  });
+  Future<Either<Exception, MapCards>> onOrderChange({
+    required int cardId,
+    required int order,
+  });
 }
 
 class KanbanBoardUsecaseImp implements KanbanBoardUsecase{
@@ -33,6 +41,34 @@ class KanbanBoardUsecaseImp implements KanbanBoardUsecase{
     }
 
     return Right(cards);
+  }
+
+  @override
+  Future<Either<Exception, MapCards>> onParentChange({
+    required int cardId,
+    required int parentId,
+  }) async {
+    final output = await repository.onParentChange(cardId: cardId, parentId: parentId);
+
+    if (output.isLeft) {
+      return Left(Exception('fail to move card'));
+    }
+
+    return getCards();
+  }
+
+  @override
+  Future<Either<Exception, MapCards>> onOrderChange({
+    required int cardId,
+    required int order,
+  }) async {
+    final output = await repository.onOrderChange(cardId: cardId, order: order + 1);
+
+    if (output.isLeft) {
+      return Left(Exception('fail to move card'));
+    }
+
+    return getCards();
   }
 
   MapCards _rowsToMapcards(List<RowEntity> rows) {

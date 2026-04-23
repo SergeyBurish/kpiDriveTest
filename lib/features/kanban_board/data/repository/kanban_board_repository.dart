@@ -23,4 +23,24 @@ class KanbanBoardRepositoryImp implements KanbanBoardRepository{
       return Left(e);
     }
   }
+  
+  @override
+  Future<Either<Exception, void>> onParentChange({required int cardId, required int parentId}) async {
+    try {
+      await remoteDataSource.onParentChange(cardId: cardId, parentId: parentId);
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, void>> onOrderChange({required int cardId, required int order}) async {
+    try {
+      await remoteDataSource.onOrderChange(cardId: cardId, order: order);
+      return const Right(null);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
 }

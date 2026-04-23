@@ -3,5 +3,8 @@
   "successfully_updated": "Successfully updated",
 
   "@_____________________ERRORS_____________________": {},
-  "error": "Error"
+  "error": "Error",
+  "error_failed_load": "Failed to load data",
+  "error_move_into_itself": "You can't move a task into itself",
+  "error_failed_move": "Failed to move task"
 }

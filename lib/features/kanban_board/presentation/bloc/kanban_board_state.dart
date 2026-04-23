@@ -1,10 +1,14 @@
 part of 'kanban_board_cubit.dart';
 
-enum KanbanBoardStatus {
-  idle,
-  inProgress,
-  success,
-  error,
+sealed class KanbanBoardStatus {
+  final String? description;
+  KanbanBoardStatus({this.description});
+}
+class Idle extends KanbanBoardStatus {}
+class InProgress extends KanbanBoardStatus {}
+class Success extends KanbanBoardStatus {}
+class Error extends KanbanBoardStatus {
+  Error({super.description});
 }
 
 @CopyWith(constructor: '_')
@@ -18,9 +22,11 @@ class KanbanBoardState {
   });
 
   KanbanBoardState.initial() :
-    status = KanbanBoardStatus.idle,
+    status = Idle(),
     cards = {};
 
-  bool get isSuccess => status == KanbanBoardStatus.success;
-  bool get isLoading => status == KanbanBoardStatus.inProgress;
+  bool get isSuccess => status is Success;
+  bool get isLoading => status is InProgress;
+  bool get isError => status is Error;
+  bool get statusDescriptionIsNotEmpty => status.description?.isNotEmpty ?? false;
 }
