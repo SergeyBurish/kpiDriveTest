@@ -5,6 +5,7 @@ import 'package:flutter_boardview/boardview.dart';
 import 'package:flutter_boardview/boardview_controller.dart';
 
 import '../../../core/dm.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/typedefs.dart';
 import '../domain/entity/row_entity.dart';
 
@@ -16,7 +17,7 @@ class KanbanBoardView extends StatelessWidget {
   final void Function({int? cardId, int? listId}) onListChange;
 
   final BoardViewController _boardViewController = BoardViewController();
-  late final List<BoardList> _lists = _cardsToLists(cards);
+  List<BoardList> _lists = [];
 
   KanbanBoardView({
     super.key,
@@ -28,12 +29,12 @@ class KanbanBoardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _lists = _cardsToLists(cards, context);
     return Stack(
       children: [
         BoardView(
           lists: _lists,
           boardViewController: _boardViewController,
-          dragDelay: 50,
         ),
         if (isLoading)
           Container(
@@ -46,46 +47,49 @@ class KanbanBoardView extends StatelessWidget {
     );
   }
 
-  List<BoardList> _cardsToLists(MapCards cards) => 
+  List<BoardList> _cardsToLists(MapCards cards, BuildContext context) => 
       cards.entries.map((MapEntry<RowEntity, Set<RowEntity>> mapEntry) => 
-          _mapEntryToBoardList(mapEntry)
+          _mapEntryToBoardList(mapEntry, context)
       ).toList();
 
-  BoardList _mapEntryToBoardList(MapEntry<RowEntity, Set<RowEntity>> mapEntry) => 
+  BoardList _mapEntryToBoardList(MapEntry<RowEntity, Set<RowEntity>> mapEntry, BuildContext context) => 
     BoardList(
       key: ValueKey<int?>(mapEntry.key.indicatorToMoId), // keep id in key instead of index field
-      backgroundColor: Colors.blueGrey, // TODO: theme
+      backgroundColor: context.colorScheme.columnBackground,
       header: [
         Expanded(
-          child: Text(
-            mapEntry.key.name,
-            maxLines: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(Dm.s8),
+            child: Text(
+              mapEntry.key.name,
+              style: context.textStyles.headerText,
+              maxLines: 3,
+            ),
           ),
         ),
-        Text('${mapEntry.key.order}')
       ],
       items: mapEntry.value.map((RowEntity rowEntity) => 
-        _rowEntityToBoardItem(rowEntity)
+        _rowEntityToBoardItem(rowEntity, context)
       ).toList(),
     );
 
-  BoardItem _rowEntityToBoardItem(RowEntity rowEntity) => 
+  BoardItem _rowEntityToBoardItem(RowEntity rowEntity, BuildContext context) => 
     BoardItem(
       index: rowEntity.indicatorToMoId,  // keep id in index field (it works in BoardItem)
-      item: Card(
-        color: Colors.green, // TODO: theme
-        child: Padding(
-          padding: const EdgeInsets.all(Dm.s8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  rowEntity.name,
-                  maxLines: 3,
-                ),
-              ),
-              Text('${rowEntity.order}')
-            ],
+      item: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Dm.s2, vertical: Dm.s4),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: context.colorScheme.borderColor),
+            borderRadius: BorderRadius.circular(Dm.s8)
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Dm.s8),
+            child: Text(
+              rowEntity.name,
+              style: context.textStyles.bodyText,
+              maxLines: 3,
+            ),
           ),
         ),
       ),

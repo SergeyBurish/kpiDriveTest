@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/dm.dart';
 import '../../../core/theme/app_theme.dart';
 import 'bloc/kanban_board_cubit.dart';
 import 'kanban_board_view.dart';
@@ -14,14 +15,27 @@ class KanbanBoardPage extends StatelessWidget {
   }
 
   void _showErrorDialog(BuildContext context, String message) {
+    final textStyles = context.textStyles;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('error'.tr()),
-        content: Text(message),
+        title: Text(
+          'error'.tr(),
+          style: textStyles.appBarText,
+        ),
+        backgroundColor: context.colorScheme.dialogBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Dm.s12),
+          side: BorderSide(color: context.colorScheme.borderColor),
+        ),
+        content: Text(
+          message,
+          style: textStyles.bodyText,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: context.buttonStyles.dialogButton,
             child: const Text('OK'),
           ),
         ],
@@ -50,7 +64,7 @@ class KanbanBoardPage extends StatelessWidget {
               'kanban_board'.tr(),
               style: context.textStyles.appBarText,
             ),
-            backgroundColor: context.colorScheme.appBarBackground,
+            backgroundColor: context.colorScheme.appBackground,
           ),
           body: KanbanBoardView(
             cards: state.cards,
@@ -58,6 +72,7 @@ class KanbanBoardPage extends StatelessWidget {
             onListChange: ({cardId, listId}) => cubit.onParentChange(cardId: cardId, parentId: listId),
             onOrderChange: ({cardId, order}) => cubit.onOrderChange(cardId: cardId, order: order),
           ),
+          backgroundColor: context.colorScheme.appBackground,
         ),
     );
   }
